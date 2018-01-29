@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>justInTune - Experimental Piano</title>
+        <link rel="stylesheet" type="text/css" href="css/piano.css" />
+        <link rel="stylesheet" type="text/css" href="css/myCss.css" />
+
+        <!-- dev jquery -->
+        <!-- <script src="jquery-3.1.1.js"></script> -->
+
+        <!-- production jquery -->
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+
+        <!-- ///////////////////////////////
+        //////////  BOOTSTRAP /////////
+        /////////////////////////////// -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+    </head>
+    <body>
+
+        <div class="container">
+
+            <!-- title and description -->
+            <div class="row">
+                <div class="col-md-3">
+                    <h1>justInTune</h1>
+                    <p>A webapp that dynamically tunes each chord to be justly intonated.</p>
+                    <br/>
+                    <a style="font-size: large;" href="#abstract">Read all about it.</a>
+                </div>
+                <div class="col-md-9">
+                    <h3>Quick Details</h3>
+                    <ul>
+                        <li class="ulist">To manipulate the keyboard, experiment with computer keyboard. ("adg" is a C major chord)</li>
+                        <li class="ulist">If you have a USB Midi device, the browser should detect it and use it for expanded input. It works well on the latest version of Chrome, at least. Although I mention that some devices work better than others!</li>
+                        <li class="ulist">Hitting spacebar allows you to switch between equal tempered and just intonation. This makes it easy and quick to compare the differences.</li>
+                    </ul> 
+                </div>
+            </div>
+
+            <!-- on screen piano -->
+            <div class="row">
+
+                <div class="col-md-3">
+                    <!-- div for displaying connected midi devices -->
+                    <div id="midi"></div>
+                </div>
+
+                <div class="col-md-9">
+                    <div id="piano">
+                        <p class="currentlyUse" id="currentlyUsing">Currently Using: Just Intonation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- div for displaying the notes pressed -->
+            <div class="row">
+                <div class="col-md-3">
+                    <span>Notes Depressed: </span>
+                    <span id="print"></span>
+                </div>
+
+                <div class="col-md-9">
+                    <p>Current Ratio Is: <span class="ratioTable"></span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    <section id="abstract">
+        <div class="container">
+            <div class="row">
+                <h1 style="text-align:center">ABSTRACT</h1>
+
+                <p>We all know an octave has a 1:2 ratio. The second note is twice as high in frequency as the first; if an A is 440hz, an octave up would be 880hz. The sound of an octave is pure: basically, like a unison. A perfect 5th also has a simple ratio of 2:3. A major third is a 4:5. A minor third is a 5:6. A major triad (consisting of a major third + a minor third) is a 4:5:6. If you had a synth play three notes, 400hz-500hz-600hz, the sound would be crisp and laser focused: no beats.</p>
+
+                <p>However, if you go up to any piano and find the pitch of each note in any major chord, you will discover that all these ratios (except the octave) are slightly off; everything is slightly out of tune. We began using this Equal Temperament Tuning (an adjusted tuning system so that an octave is divided into 12 equal parts) to make all keys sound equally good (or 'equally bad'). Before Equal Temperament, depending on how you tuned things, some keys sounded great and others terrible.</p>
+
+                <p>Having Equal Temperament works out well, especially on a practical level. If a piece of music played on a piano with some historic tuning changed keys, the intonation would either get better or worse depending on where you started and where you went to, and although many things sounded much more pure, it came with the cost of a very restrictive use. In other words, you couldn't have your cake and eat it.</p>
+
+                <p>HOWEVER, with today's ease of harnassing the massive computational power and speed of machines with a few handfuls of code, it's possible to humor the idea that a flexible Just Intontation system might in some capacity have a place in music once more.</p>
+
+                <p>It's also interesting to note that musicians who play instruments without fixed pitches (violinists, for example) are always adjusting their intonation to fit other string players (often with Just Intonation), a fixed Equal Tempered instrument (a piano, perhaps), or a general key center (the tonic, or dominant). In a world increasingly dominated by synthetically produced music, it would be interesting if the synthetic instruments made similar decisions with regard to their tuning. This web-app is a small step in that direction.</p>
+
+                <p>I start with the assumption that the simplest ratio table (like 4:5:6 for a major chord) results in the most consonant chord. I have a good hunch that's already INCORRECT, but it seems correct quite often and it's easy to design an algorithm around that.</p>
+
+                <p>The simplest ratio table is not always easy to find, however. Intervals are somewhat subjective. We're not quite sure whether a 15:16 or a 16:17 describes a minor second better. They both might sound "better" in different contexts -- with other notes. And besides unisons and perfect 5ths, every basic interval has multiple definitions. The tritone has at least 6.</p>
+
+                <p>My technique for choosing the best table involves your computer calculating every possible combination of ratio tables for up to 6 inputed notes and then choosing the simplest one.</p>
+
+                <p>Sometimes the results are very pure and clear. Other times can be quite unsettling; just altering one note in a sustained chord causes everything to shift around. For example, hold down any note, play a second note a perfect 4th above and climb that second note to the octave. Notice the shifting!</p>
+
+                <p>Anyways... I don't expect a tool like this to be that useful except in making one aware of how perplexing and subjective tuning is. What we've historically been accustomed to has changed in modern times and it may change more. It also makes you wonder what dissonance is and how inescapable it is on even a "perfectly" tuned instrument; the beating on Equal Temperament is almost like a chorus effect. And it makes you realize just how good a mathematically perfect ratio can sound.</p>
+
+                <p>-Joseph Weidinger 2016-10-20</p>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="future">
+        <div class="container">
+            <div class="row">
+                <h1 style="text-align:center">FUTURE</h1> <!-- later, future and updates -->
+
+                    <ul>
+                        <li class="ulist">I want to experiment with sampling an instrument at a frequency as opposed to synthesizing an artificial one.</li>
+                        <li class="ulist">Currently, the ratios are derived from the highest note to the lowest. I would like to provide an option for selecting a specific note to derive everything else.</li>
+                    </ul> 
+
+
+            </div>
+        </div>
+    </section>
+
+    <section id="credits">
+        <div class="container">
+            <div class="row">
+                <h1 style="text-align:center">CREDITS</h1> <!-- later, future and updates -->
+                <br/>
+                    <p style="text-align : center;">
+                        Languages : HTML, CSS, Javascript, jQuery
+                        <br/>
+                        <a href="https://github.com/mrcoles/javascript-piano">Basic Javascript Piano</a> by <a href="http://mrcoles.com/">Peter Coles.</a>
+                        <br/>
+                        <a href="http://flockingjs.org/">Flocking - Web audio framework</a>
+                        <br/>
+                        <a href="https://www.keithmcmillen.com/blog/making-music-in-the-browser-web-midi-api/">Web MIDI API</a>
+                    </p>
+
+
+            </div>
+        </div>
+    </section>
+        
+        <!-- flocking -->
+        <script src="js/flocking-no-jquery.min.js"></script>
+        <script src="js/flockingSynth.js"></script>
+
+        <script src="js/midi.js"></script>
+        <script src="js/calc.js"></script>
+        <script src="js/piano.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
